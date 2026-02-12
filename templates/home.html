@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Próximos Eventos | Ticketera{% endblock %}
+
+{% block content %}
+<h1 class="text-4xl font-black mb-8 text-center text-white">PRÓXIMOS <span class="text-primary">EVENTOS</span></h1>
+
+{% if events %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {% for event in events %}
+    <a href="{% url 'event_detail' event.pk %}"
+        class="group block bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-primary/20 transition duration-300 transform hover:-translate-y-1">
+        <div class="h-48 bg-gray-700 overflow-hidden relative">
+            {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}"
+                class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+            {% else %}
+            <div class="flex items-center justify-center h-full text-gray-500">Sin Imagen</div>
+            {% endif %}
+            <div class="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
+                {{ event.date|date:"d M" }}
+            </div>
+        </div>
+        <div class="p-5">
+            <h2 class="text-xl font-bold mb-2 group-hover:text-primary transition">{{ event.title }}</h2>
+            <p class="text-gray-400 text-sm mb-4"><i class="fas fa-map-marker-alt mr-1"></i> {{ event.venue }}</p>
+            <div class="flex justify-between items-center text-sm">
+                <span class="bg-gray-800 px-3 py-1 rounded-full text-gray-300">Desde ${{
+                    event.cheapest_ticket.price|default:"--" }}</span>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-20 text-gray-500">
+    <p class="text-xl">No hay eventos próximos aún.</p>
+</div>
+{% endif %}
+{% endblock %}
