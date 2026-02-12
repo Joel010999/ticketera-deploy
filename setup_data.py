@@ -13,11 +13,19 @@ User = get_user_model()
 
 def setup():
     # 1. Create Superuser
-    if not User.objects.filter(username='admin').exists():
-        print("Creating superuser 'admin' with password 'admin'...")
-        User.objects.create_superuser('admin', 'admin@example.com', 'admin', dni='00000000', full_name='Administrator')
-    else:
-        print("Superuser 'admin' already exists.")
+    # 1. Ensure Superuser
+    try:
+        if not User.objects.filter(username='admin').exists():
+            print("Creating superuser 'admin'...")
+            User.objects.create_superuser('admin', 'admin@example.com', 'admin', dni='00000000', full_name='Administrator')
+        else:
+            print("Superuser 'admin' already exists. Updating password...")
+            u = User.objects.get(username='admin')
+            u.set_password('admin')
+            u.save()
+            print("Password for 'admin' updated to 'admin'.")
+    except Exception as e:
+        print(f"Error creating/updating superuser: {e}")
 
     # 2. Create Sample Event
     if not Event.objects.exists():
